@@ -1,0 +1,91 @@
+﻿@model RoleManagementVM
+
+
+<div class="card shadow border-0 my-4">
+    <div class="card bg-secondary bg-gradient m-lg-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white">Manage User Role</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <div class="row">
+            <div class="border border-2 p-3">
+                <form asp-action="RoleManagement" asp-controller="User" enctype="multipart/form-data" method="post">
+                    <input asp-for="User.Id" hidden/>
+                    <div class="row">
+                        <div class="col-12">
+                            <div asp-validation-summary="All" class="text-danger"></div>
+
+                            <div class="form-floating py-2 col-12">
+                                <input asp-for="@Model.User.Name" readonly class="form-control border-0 shadow" />
+                                <label asp-for="@Model.User.Name" class="control-label"></label>
+                                <span asp-validation-for="@Model.User.Name" class="text-danger"></span>
+                            </div>
+
+
+                            <div class="form-floating py-2 col-12">
+                                <Select asp-items="@Model.RoleList" asp-for="@Model.User.Role" class="form-select border-0 shadow"></Select>
+                                
+                                <label asp-for="@Model.User.Role" class="control-label"></label>
+                                <span asp-validation-for="@Model.User.Role" class="text-danger"></span>
+                            </div>
+
+
+                            @{
+                                var companyVisible = "display:none;"; 
+                            }
+                            @if(Model.User.Role == SD.Role_Company)
+                            {
+                                 companyVisible = "display:block;";
+                            }
+
+
+                            <div id="companyField" class="form-floating py-2 col-12" style="@companyVisible">
+                                <select asp-items="@Model.CompanyList" asp-for="@Model.User.CompanyId" class="form-select border-0 shadow">
+                                    <option disabled selected>--Select Company--</option>
+                                </select>
+                                <label asp-for="@Model.User.Company.Name" class="control-label"></label>
+                                <span asp-validation-for="@Model.User.CompanyId" class="text-danger"></span>
+                            </div>
+
+
+                            <div class="row p-2 mt-3 mb-3">
+                                <div class="col-6 p-1">
+                                        <button type="submit" class="btn btn-primary form-control">Update Role</button>
+                                </div>
+                                <div class="col-6 p-1">
+                                    <a asp-controller="User" asp-action="Index" class="btn btn-secondary border-2 form-control">Back to List</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+               $(document).ready(function(){
+            function toggleCompanyField() {
+                var selection = $('#User_Role option:selected').text();
+                if(selection === 'Company'){
+                    $('#companyField').show();
+                } else {
+                    $('#companyField').hide();
+                }
+            }
+
+            $('#User_Role').change(toggleCompanyField);
+
+            // Run once on page load to apply correct state
+            toggleCompanyField();
+        });
+
+    </script>
+}
